@@ -67,7 +67,7 @@ process.on("SIGINT", () => {
 });
 
 // Promise.reject(new Error("I forgot to catch this promise")); // unhandled rejection error
-// throw new Error("I forgot to handle this local error"); // uncaught exception error.
+// throw new Error("I forgot to handle this local error"); // uncaught exception error...
 
 /**
  * unhandled rejection error
