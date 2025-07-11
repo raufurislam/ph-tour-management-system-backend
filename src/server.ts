@@ -1,7 +1,9 @@
+/* eslint-disable no-console */
 import { Server } from "http";
 import mongoose from "mongoose";
 import app from "./app";
-import { promise } from "zod";
+
+// let myAge;
 
 let server: Server;
 
@@ -67,7 +69,7 @@ process.on("SIGINT", () => {
 });
 
 // Promise.reject(new Error("I forgot to catch this promise")); // unhandled rejection error
-// throw new Error("I forgot to handle this local error"); // uncaught exception error..
+// throw new Error("I forgot to handle this local error"); // uncaught exception error...
 
 /**
  * unhandled rejection error
