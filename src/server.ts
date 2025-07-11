@@ -1,7 +1,9 @@
+/* eslint-disable no-console */
 import { Server } from "http";
 import mongoose from "mongoose";
 import app from "./app";
-import { promise } from "zod";
+
+// let myAge;
 
 let server: Server;
 
