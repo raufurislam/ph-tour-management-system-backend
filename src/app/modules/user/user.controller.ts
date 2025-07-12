@@ -6,7 +6,7 @@ import { UserServices } from "./user.service";
 
 const createUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    throw new Error("Fake error");
+    // throw new Error("Fake error");
     const user = await UserServices.createUser(req.body);
 
     res.status(httpStatus.CREATED).json({
