@@ -1,10 +1,10 @@
 // user.route.ts
 import { Router } from "express";
-import { UserController } from "./user.controller";
+import { UserControllers } from "./user.controller";
 
 const router = Router();
 
-router.post("/register", UserController.createUser);
-router.get("/all-users", UserController.getAllUsers);
+router.post("/register", UserControllers.createUser);
+router.get("/all-users", UserControllers.getAllUsers);
 
 export const UserRoutes = router;
