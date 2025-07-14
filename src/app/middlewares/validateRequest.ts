@@ -8,7 +8,7 @@ export const validateRequest =
       console.log("Old body", req.body);
       req.body = await ZodSchema.parseAsync(req.body);
       console.log("new body", req.body);
-      // next();
+      next();
     } catch (error) {
       next(error);
     }
