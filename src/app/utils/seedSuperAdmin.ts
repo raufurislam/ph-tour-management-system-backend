@@ -10,7 +10,7 @@ export const seedSuperAdmin = async () => {
     });
 
     if (isSuperAdminExist) {
-      console.log("Super Admin Already Exists!");
+      // console.log("Super Admin Already Exists!");
       return;
     }
 
