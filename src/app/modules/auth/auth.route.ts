@@ -1,10 +1,11 @@
 // auth.route.ts
 import { Router } from "express";
-import { authController } from "./auth.controller";
+import { AuthControllers } from "./auth.controller";
 
 const router = Router();
 
-router.post("/login", authController.credentialLogin);
-router.post("/refresh-token", authController.getNewAccessToken);
+router.post("/login", AuthControllers.credentialLogin);
+router.post("/refresh-token", AuthControllers.getNewAccessToken);
+router.post("/logout", AuthControllers.logout);
 
 export const AuthRoute = router;
