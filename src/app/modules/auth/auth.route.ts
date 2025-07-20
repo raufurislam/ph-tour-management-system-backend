@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 // auth.route.ts
 import { NextFunction, Request, Response, Router } from "express";
 import { AuthControllers } from "./auth.controller";
