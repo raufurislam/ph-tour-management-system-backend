@@ -1,12 +1,13 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import passport from "passport";
 import {
   Strategy as GoogleStrategy,
   Profile,
   VerifyCallback,
 } from "passport-google-oauth20";
-import { envVars } from "./env";
-import { User } from "../modules/user/user.model";
 import { Role } from "../modules/user/user.interface";
+import { User } from "../modules/user/user.model";
+import { envVars } from "./env";
 
 passport.use(
   new GoogleStrategy(
@@ -25,7 +26,7 @@ passport.use(
         const email = profile.emails?.[0].value;
 
         if (!email) {
-          return done(null, false, { message: " No email found" });
+          return done(null, false, { mesaage: "No email found" });
         }
 
         let user = await User.findOne({ email });
@@ -48,7 +49,7 @@ passport.use(
 
         return done(null, user);
       } catch (error) {
-        console.log("Google strategy error", error);
+        console.log("Google Strategy Error", error);
         return done(error);
       }
     }
@@ -60,3 +61,17 @@ passport.use(
 // Bridge == Google -> user db store -> token
 //Custom -> email , password, role : USER, name... -> registration -> DB -> 1 User create
 //Google -> req -> google -> successful : Jwt Token : Role , email -> DB - Store -> token - api access
+
+passport.serializeUser((user: any, done: (err: any, id?: unknown) => void) => {
+  done(null, user._id);
+});
+
+passport.deserializeUser(async (id: string, done: any) => {
+  try {
+    const user = await User.findById(id);
+    done(null, user);
+  } catch (error) {
+    console.log(error);
+    done(error);
+  }
+});
