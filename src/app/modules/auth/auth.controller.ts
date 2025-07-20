@@ -18,11 +18,13 @@ const credentialLogin = catchAsync(
     passport.authenticate("local", async (err: any, user: any, info: any) => {
       if (err) {
         // return next(err);
-        return new AppError(401, err);
+        // console.log("from err");
+        return next(new AppError(401, err));
       }
 
       if (!user) {
-        return new AppError(401, info.message);
+        // console.log("from !user");
+        return next(new AppError(401, info.message));
       }
 
       const userTokens = await createUserTokens(user);
