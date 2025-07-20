@@ -10,10 +10,13 @@ import { setAuthCookie } from "../../utils/setCookie";
 import { JwtPayload } from "jsonwebtoken";
 import { createUserTokens } from "../../utils/userTokens";
 import { envVars } from "../../config/env";
+import passport from "passport";
 
 const credentialLogin = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const loginInfo = await AuthServices.credentialLogin(req.body);
+    // const loginInfo = await AuthServices.credentialLogin(req.body);
+
+    passport.authenticate();
 
     // res.cookie("accessToken", loginInfo.accessToken, {
     //   httpOnly: true,
