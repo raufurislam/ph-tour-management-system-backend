@@ -9,7 +9,7 @@ const divisionSchema = new Schema<IDivision>(
     thumbnail: { type: String },
     description: { type: String },
   },
-  { timestamps: true }
+  { timestamps: true, versionKey: false }
 );
 
 export const Division = model<IDivision>("Division", divisionSchema);
