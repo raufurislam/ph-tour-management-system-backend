@@ -3,6 +3,11 @@
 import { NextFunction, Request, Response } from "express";
 import { envVars } from "../config/env";
 import AppError from "../errorHelpers/AppError";
+import { handleDuplicateError } from "../helpers/handleDuplicateError";
+import { handleCastError } from "../helpers/handleCastError";
+import { handleZodError } from "../helpers/handleZodError";
+import { handleValidationError } from "../helpers/handleValidationError";
+import { TErrorSources } from "../interfaces/error.types";
 
 export const globalErrorHandler = (
   err: any,
@@ -10,25 +15,44 @@ export const globalErrorHandler = (
   res: Response,
   next: NextFunction
 ) => {
-  console.log(err);
+  if (envVars.NODE_ENV === "development") {
+    console.log(err);
+  }
+
+  let errorSources: TErrorSources[] = [];
   let statusCode = 500;
   let message = "Something Went Wrong!!";
 
   // Duplicate error
   if (err.code === 11000) {
-    console.log("Duplicate error", err.message);
+    const simplifiedError = handleDuplicateError(err);
 
-    const matchedArray = (message = err.message.match(/"([^"]*)"/));
-    console.log(matchedArray);
-
-    statusCode = 400;
-    message = `${matchedArray[1]} Already Exist!`;
+    statusCode = simplifiedError.statusCode;
+    message = simplifiedError.message;
   }
 
   // CastError
   else if (err.name === "CastError") {
-    statusCode = 400;
-    message = "Invalid MongoDB ObjectID. Please provide a valid id";
+    const simplifiedError = handleCastError(err);
+    statusCode = simplifiedError.statusCode;
+    message = simplifiedError.message;
+  }
+
+  // ZodError
+  else if (err.name === "ZodError") {
+    const simplifiedError = handleZodError(err);
+    statusCode = simplifiedError.statusCode;
+    message = simplifiedError.message;
+    errorSources = simplifiedError.errorSources as TErrorSources[];
+  }
+
+  // ValidationError
+  else if (err.name === "ValidationError") {
+    const simplifiedError = handleValidationError(err);
+
+    statusCode = simplifiedError.statusCode;
+    errorSources = simplifiedError.errorSources as TErrorSources[];
+    message = simplifiedError.message;
   } else if (err instanceof AppError) {
     statusCode = err.statusCode;
     message = err.message;
@@ -40,7 +64,8 @@ export const globalErrorHandler = (
   res.status(statusCode).json({
     success: false,
     message,
-    err,
+    errorSources,
+    err: envVars.NODE_ENV === "development" ? err : null,
     stack: envVars.NODE_ENV === "development" ? err.stack : null,
   });
 };
