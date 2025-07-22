@@ -1,5 +1,4 @@
 // tour.services.ts
-import { QueryBuilder } from "../../utils/QueryBuilder";
 import { tourSearchableFields } from "./tour.constant";
 import { ITour, ITourType } from "./tour.interface";
 import { Tour, TourType } from "./tour.model";
@@ -45,12 +44,12 @@ const createTour = async (payload: ITour) => {
     throw new Error("A tour with this title already exists.");
   }
 
-  // const baseSlug = payload.title.toLowerCase().split(" ").join("-")
-  // let slug = `${baseSlug}`
+  // const baseSlug = payload.title.toLowerCase().split(" ").join("-");
+  // let slug = `${baseSlug}`;
 
   // let counter = 0;
   // while (await Tour.exists({ slug })) {
-  //     slug = `${slug}-${counter++}` // dhaka-division-2
+  //   slug = `${slug}-${counter++}`; // dhaka-division-2
   // }
 
   // payload.slug = slug;
@@ -61,25 +60,29 @@ const createTour = async (payload: ITour) => {
 };
 
 const getAllTours = async (query: Record<string, string>) => {
-  const queryBuilder = new QueryBuilder(Tour.find(), query);
+  console.log(query);
+  const filter = query;
 
-  const tours = await queryBuilder
-    .search(tourSearchableFields)
-    .filter()
-    .sort()
-    .fields()
-    .paginate();
+  const searchTerm = query.searchTerm || "";
 
-  // const meta = await queryBuilder.getMeta()
+  delete filter["searchTerm"];
 
-  const [data, meta] = await Promise.all([
-    tours.build(),
-    queryBuilder.getMeta(),
-  ]);
+  const searchQuery = {
+    $or: tourSearchableFields.map((field) => ({
+      [field]: { $regex: searchTerm, $options: "i" },
+    })),
+  };
 
+  // console.log(searchQuery);
+
+  const tours = await Tour.find(searchQuery).find(filter);
+
+  const totalTours = await Tour.countDocuments();
   return {
-    data,
-    meta,
+    data: tours,
+    meta: {
+      total: totalTours,
+    },
   };
 };
 
@@ -91,15 +94,15 @@ const updateTour = async (id: string, payload: Partial<ITour>) => {
   }
 
   // if (payload.title) {
-  //     const baseSlug = payload.title.toLowerCase().split(" ").join("-")
-  //     let slug = `${baseSlug}`
+  //   const baseSlug = payload.title.toLowerCase().split(" ").join("-");
+  //   let slug = `${baseSlug}`;
 
-  //     let counter = 0;
-  //     while (await Tour.exists({ slug })) {
-  //         slug = `${slug}-${counter++}` // dhaka-division-2
-  //     }
+  //   let counter = 0;
+  //   while (await Tour.exists({ slug })) {
+  //     slug = `${slug}-${counter++}`; // dhaka-division-2
+  //   }
 
-  //     payload.slug = slug
+  //   payload.slug = slug;
   // }
 
   const updatedTour = await Tour.findByIdAndUpdate(id, payload, { new: true });
