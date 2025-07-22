@@ -45,12 +45,12 @@ const createTour = async (payload: ITour) => {
     throw new Error("A tour with this title already exists.");
   }
 
-  // const baseSlug = payload.title.toLowerCase().split(" ").join("-")
-  // let slug = `${baseSlug}`
+  // const baseSlug = payload.title.toLowerCase().split(" ").join("-");
+  // let slug = `${baseSlug}`;
 
   // let counter = 0;
   // while (await Tour.exists({ slug })) {
-  //     slug = `${slug}-${counter++}` // dhaka-division-2
+  //   slug = `${slug}-${counter++}`; // dhaka-division-2
   // }
 
   // payload.slug = slug;
@@ -91,15 +91,15 @@ const updateTour = async (id: string, payload: Partial<ITour>) => {
   }
 
   // if (payload.title) {
-  //     const baseSlug = payload.title.toLowerCase().split(" ").join("-")
-  //     let slug = `${baseSlug}`
+  //   const baseSlug = payload.title.toLowerCase().split(" ").join("-");
+  //   let slug = `${baseSlug}`;
 
-  //     let counter = 0;
-  //     while (await Tour.exists({ slug })) {
-  //         slug = `${slug}-${counter++}` // dhaka-division-2
-  //     }
+  //   let counter = 0;
+  //   while (await Tour.exists({ slug })) {
+  //     slug = `${slug}-${counter++}`; // dhaka-division-2
+  //   }
 
-  //     payload.slug = slug
+  //   payload.slug = slug;
   // }
 
   const updatedTour = await Tour.findByIdAndUpdate(id, payload, { new: true });
