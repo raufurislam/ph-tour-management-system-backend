@@ -84,24 +84,33 @@ const getAllTours = async (query: Record<string, string>) => {
     })),
   };
 
-  // console.log(searchQuery);
+  // const tours = await Tour.find(searchQuery)
+  //   .find(filter)
+  //   .sort(sort)
+  //   .select(fields)
+  //   .skip(skip)
+  //   .limit(limit);
 
-  const tours = await Tour.find(searchQuery)
-    .find(filter)
+  const filterQuery = Tour.find(filter);
+  const tours = filterQuery.find(searchQuery);
+  const allTours = await tours
     .sort(sort)
     .select(fields)
     .skip(skip)
     .limit(limit);
 
   const totalTours = await Tour.countDocuments();
+  const totalPage = Math.ceil(totalTours / limit);
 
   const meta = {
-    page: 1,
-    total: 10,
-    limit: 5,
+    page: page,
+    limit: limit,
+    total: totalTours,
+    totalPage: totalPage,
   };
+
   return {
-    data: tours,
+    data: allTours,
     meta: meta,
   };
 };
