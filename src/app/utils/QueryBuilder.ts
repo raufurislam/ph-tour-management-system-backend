@@ -30,7 +30,8 @@ export class QueryBuilder<T> {
         [field]: { $regex: searchTerm, $options: "i" },
       })),
     };
-    this.modelQuery = this.modelQuery.find(searchQuery);
+    this.modelQuery = this.modelQuery.find(searchQuery); // Tour.find().find(filter)
+
     return this;
   }
 
@@ -41,6 +42,7 @@ export class QueryBuilder<T> {
 
     return this;
   }
+
   fields(): this {
     const fields = this.query.fields?.split(",").join(" ") || "";
 
@@ -48,9 +50,10 @@ export class QueryBuilder<T> {
 
     return this;
   }
+
   paginate(): this {
     const page = Number(this.query.page) || 1;
-    const limit = Number(this.query.limit) || 10;
+    const limit = Number(this.query.limit) || 5;
     const skip = (page - 1) * limit;
 
     this.modelQuery = this.modelQuery.skip(skip).limit(limit);
@@ -66,7 +69,7 @@ export class QueryBuilder<T> {
     const totalDocuments = await this.modelQuery.model.countDocuments();
 
     const page = Number(this.query.page) || 1;
-    const limit = Number(this.query.limit) || 10;
+    const limit = Number(this.query.limit) || 5;
 
     const totalPage = Math.ceil(totalDocuments / limit);
 
