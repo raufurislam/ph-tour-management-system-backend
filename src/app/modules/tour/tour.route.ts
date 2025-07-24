@@ -46,6 +46,8 @@ router.post(
 
 router.get("/", TourController.getAllTours);
 
+router.get("/:slug", TourController.getSingleTour);
+
 router.patch(
   "/:id",
   checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
