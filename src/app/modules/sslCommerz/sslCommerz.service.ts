@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { envVars } from "../../config/env";
 import AppError from "../../errorHelpers/AppError";
-import { ISslCommerz } from "./sslCommerz.interface";
+import { ISSLCommerz } from "./sslCommerz.interface";
 import axios from "axios";
 import httpStatus from "http-status-codes";
 
-const sslPaymentInit = async (payload: ISslCommerz) => {
+const sslPaymentInit = async (payload: ISSLCommerz) => {
   try {
     const data = {
       store_id: envVars.SSL.STORE_ID,
@@ -13,9 +13,9 @@ const sslPaymentInit = async (payload: ISslCommerz) => {
       total_amount: payload.amount,
       currency: "BDT",
       tran_id: payload.transactionId,
-      success_url: envVars.SSL.SSL_SUCCESS_BACKEND_URL,
-      fail_url: envVars.SSL.SSL_FAIL_BACKEND_URL,
-      cancel_url: envVars.SSL.SSL_CANCEL_BACKEND_URL,
+      success_url: `${envVars.SSL.SSL_SUCCESS_BACKEND_URL}?transactionId=${payload.transactionId}&amount=${payload.amount}&status=success`,
+      fail_url: `${envVars.SSL.SSL_FAIL_BACKEND_URL}?transactionId=${payload.transactionId}&amount=${payload.amount}&status=fail`,
+      cancel_url: `${envVars.SSL.SSL_CANCEL_BACKEND_URL}?transactionId=${payload.transactionId}&amount=${payload.amount}&status=cancel`,
       // ipn_url: "http://localhost:3030/ipn",
       shipping_method: "N/A",
       product_name: "Tour",

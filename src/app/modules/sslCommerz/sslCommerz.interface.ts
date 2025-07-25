@@ -1,4 +1,4 @@
-export interface ISslCommerz {
+export interface ISSLCommerz {
   amount: number;
   transactionId: string;
   name: string;
