@@ -68,6 +68,7 @@ const deleteTourType = async (id: string) => {
 
 const createTour = async (payload: ITour) => {
   const existingTour = await Tour.findOne({ title: payload.title });
+
   if (existingTour) {
     throw new Error("A tour with this title already exists.");
   }
