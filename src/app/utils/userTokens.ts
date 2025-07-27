@@ -1,3 +1,4 @@
+// userToken.ts
 import { JwtPayload } from "jsonwebtoken";
 import { envVars } from "../config/env";
 import { IsActive, IUser } from "../modules/user/user.interface";
@@ -12,7 +13,6 @@ export const createUserTokens = (user: Partial<IUser>) => {
     email: user.email,
     role: user.role,
   };
-
   const accessToken = generateToken(
     jwtPayload,
     envVars.JWT_ACCESS_SECRET,
@@ -44,7 +44,6 @@ export const createNewAccessTokenWithRefreshToken = async (
   if (!isUserExist) {
     throw new AppError(httpStatus.BAD_REQUEST, "User does not exist");
   }
-
   if (
     isUserExist.isActive === IsActive.BLOCKED ||
     isUserExist.isActive === IsActive.INACTIVE
@@ -54,13 +53,8 @@ export const createNewAccessTokenWithRefreshToken = async (
       `User is ${isUserExist.isActive}`
     );
   }
-
   if (isUserExist.isDeleted) {
     throw new AppError(httpStatus.BAD_REQUEST, "User is deleted");
-  }
-
-  if (!isUserExist) {
-    throw new AppError(httpStatus.BAD_REQUEST, "Email does not exist");
   }
 
   const jwtPayload = {
@@ -68,7 +62,6 @@ export const createNewAccessTokenWithRefreshToken = async (
     email: isUserExist.email,
     role: isUserExist.role,
   };
-
   const accessToken = generateToken(
     jwtPayload,
     envVars.JWT_ACCESS_SECRET,
