@@ -5,7 +5,7 @@ import {
   Profile,
   VerifyCallback,
 } from "passport-google-oauth20";
-import { Role } from "../modules/user/user.interface";
+import { IsActive, Role } from "../modules/user/user.interface";
 import { User } from "../modules/user/user.model";
 import { envVars } from "./env";
 import { Strategy as LocalStrategy } from "passport-local";
@@ -24,6 +24,25 @@ passport.use(
 
         if (!isUserExist) {
           return done("User does not exist");
+        }
+
+        if (!isUserExist.isVerified) {
+          // throw new AppError(httpStatus.BAD_REQUEST, "User is not verified");
+          done(`User is ${isUserExist.isVerified}`);
+        }
+
+        if (
+          isUserExist.isActive === IsActive.BLOCKED ||
+          isUserExist.isActive === IsActive.INACTIVE
+        ) {
+          // throw new AppError(httpStatus.BAD_REQUEST, `User is ${isUserExist.isActive}`);
+
+          done(`User is ${isUserExist.isActive}`);
+        }
+
+        if (isUserExist.isDeleted) {
+          // throw new AppError(httpStatus.BAD_REQUEST, "User is deleted");
+          done(`User is ${isUserExist.isDeleted}`);
         }
 
         const isGoogleAuthenticated = isUserExist.auths.some(
