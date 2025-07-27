@@ -7,7 +7,7 @@ export const createDivisionSchema = z.object({
 });
 
 export const updateDivisionSchema = z.object({
-  name: z.string().min(1),
+  name: z.string().min(1).optional(),
   thumbnail: z.string().optional(),
   description: z.string().optional(),
 });
