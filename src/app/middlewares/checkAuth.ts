@@ -1,3 +1,4 @@
+// checkAuth.ts
 import { NextFunction, Request, Response } from "express";
 import AppError from "../errorHelpers/AppError";
 import { JwtPayload } from "jsonwebtoken";
@@ -14,10 +15,10 @@ export const checkAuth =
       const accessToken = req.headers.authorization;
 
       if (!accessToken) {
-        throw new AppError(403, "No token found");
+        throw new AppError(403, "No Token Recieved");
       }
 
-      const verifiedToken: JwtPayload = verifyToken(
+      const verifiedToken = verifyToken(
         accessToken,
         envVars.JWT_ACCESS_SECRET
       ) as JwtPayload;
@@ -27,7 +28,9 @@ export const checkAuth =
       if (!isUserExist) {
         throw new AppError(httpStatus.BAD_REQUEST, "User does not exist");
       }
-
+      if (!isUserExist.isVerified) {
+        throw new AppError(httpStatus.BAD_REQUEST, "User is not verified");
+      }
       if (
         isUserExist.isActive === IsActive.BLOCKED ||
         isUserExist.isActive === IsActive.INACTIVE
@@ -37,27 +40,17 @@ export const checkAuth =
           `User is ${isUserExist.isActive}`
         );
       }
-
       if (isUserExist.isDeleted) {
         throw new AppError(httpStatus.BAD_REQUEST, "User is deleted");
       }
 
-      if (!isUserExist.isVerified) {
-        throw new AppError(httpStatus.BAD_REQUEST, "User is not verified");
-      }
-
-      if (!isUserExist) {
-        throw new AppError(httpStatus.BAD_REQUEST, "Email does not exist");
-      }
-
-      // authRoles = ["ADMIN", "SUPER_ADMIN"].includes("ADMIN")
       if (!authRoles.includes(verifiedToken.role)) {
-        throw new AppError(403, "You are not permitted to view this route");
+        throw new AppError(403, "You are not permitted to view this route!!!");
       }
       req.user = verifiedToken;
       next();
     } catch (error) {
-      // console.log("Jwt error", error);
+      console.log("jwt error", error);
       next(error);
     }
   };
