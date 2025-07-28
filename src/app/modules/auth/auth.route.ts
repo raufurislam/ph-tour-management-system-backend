@@ -16,13 +16,21 @@ router.post(
   checkAuth(...Object.values(Role)),
   AuthControllers.changePassword
 );
+
 router.post(
   "/reset-password",
   checkAuth(...Object.values(Role)),
   AuthControllers.resetPassword
 );
+
 router.post(
   "/set-password",
+  checkAuth(...Object.values(Role)),
+  AuthControllers.setPassword
+);
+
+router.post(
+  "/forgot-password",
   checkAuth(...Object.values(Role)),
   AuthControllers.setPassword
 );
