@@ -24,7 +24,7 @@ router.get("/me", checkAuth(...Object.values(Role)), UserControllers.getMe);
 
 router.get(
   "/:id",
-  checkAuth(...Object.values(Role)),
+  checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
   UserControllers.getSingleUser
 );
 
