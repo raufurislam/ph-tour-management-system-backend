@@ -4,7 +4,6 @@ import httpStatus from "http-status-codes";
 import { catchAsync } from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
 import { UserServices } from "./user.service";
-import { decode } from "jsonwebtoken";
 import { JwtPayload } from "jsonwebtoken";
 
 const createUser = catchAsync(
@@ -24,6 +23,7 @@ const createUser = catchAsync(
     });
   }
 );
+
 const updateUser = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.params.id;

@@ -29,6 +29,7 @@ router.post(
   AuthControllers.setPassword
 );
 
+// Frontend -> forget-password -> email -> user status check -> short expiration token (valid for 10 min) -> email -> Fronted Link http://localhost:5173/reset-password?email=saminisrar1@gmail.com&token=token -> frontend e  query theke user er email and token extract anbo -> new password user theke nibe -> backend er /reset-password api -> authorization = token -> newPassword -> token verify -> password hash -> save user password
 router.post(
   "/forgot-password",
   checkAuth(...Object.values(Role)),
