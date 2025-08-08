@@ -58,6 +58,7 @@
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
     "passport-local": "^1.0.0",
+    "redis": "^5.8.0",
     "zod": "^3.25.74"
   }
 }
