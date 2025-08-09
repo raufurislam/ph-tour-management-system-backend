@@ -1,3 +1,4 @@
+import { Booking } from "../booking/booking.model";
 import { Tour } from "../tour/tour.model";
 import { IsActive } from "../user/user.interface";
 import { User } from "../user/user.model";
@@ -130,7 +131,7 @@ const getTourStats = async () => {
     },
   ]);
 
-  const totalHighestBookedTourPromise = Tour.aggregate([
+  const totalHighestBookedTourPromise = Booking.aggregate([
     // stage-1: Group the tour
     {
       $group: {
@@ -147,6 +148,36 @@ const getTourStats = async () => {
     // stage-3: sort
     {
       $limit: 5,
+    },
+
+    // stage-4: lookup stage
+    {
+      $lookup: {
+        from: "tours",
+        let: { tourId: "$_id" },
+        pipeline: [
+          {
+            $match: {
+              $expr: { $eq: ["$_id", "$$tourId"] },
+            },
+          },
+        ],
+        as: "tour",
+      },
+    },
+
+    // stage-5: unwind stage
+    {
+      $unwind: "$tour",
+    },
+
+    // stage-6: project stage
+    {
+      $project: {
+        bookingCount: 1,
+        "tour.title": 1,
+        "tour.slug": 1,
+      },
     },
   ]);
 
