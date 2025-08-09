@@ -80,25 +80,125 @@ const getTourStats = async () => {
         as: "type",
       },
     },
+
+    // stage-2: unwind the array to object
+    {
+      $unwind: "$type",
+    },
+
+    // stage-3: grouping tour type
+    {
+      $group: {
+        _id: "$type.name",
+        count: { $sum: 1 },
+      },
+    },
   ]);
 
-  const [totalTour, totalTourByTourTypes] = await Promise.all([
+  const avgTourCostPromise = Tour.aggregate([
+    // stage-1: group the cost from, do sum, and average the sum
+    {
+      $group: {
+        _id: null,
+        avgCostFrom: { $avg: "$costFrom" },
+      },
+    },
+  ]);
+
+  const totalTourByDivisionPromise = Tour.aggregate([
+    // stage-1: Connect Division model - lookup stage
+    {
+      $lookup: {
+        from: "divisions",
+        localField: "division",
+        foreignField: "_id",
+        as: "division",
+      },
+    },
+
+    // stage-2: unwind the array to object
+    {
+      $unwind: "$division",
+    },
+
+    // stage-3: grouping tour type
+    {
+      $group: {
+        _id: "$division.name",
+        count: { $sum: 1 },
+      },
+    },
+  ]);
+
+  const totalHighestBookedTourPromise = Tour.aggregate([
+    // stage-1: Group the tour
+    {
+      $group: {
+        _id: "$tour",
+        bookingCount: { $sum: 1 },
+      },
+    },
+
+    // stage-2: sort the tour
+    {
+      $sort: { bookingCount: -1 },
+    },
+
+    // stage-3: sort
+    {
+      $limit: 5,
+    },
+  ]);
+
+  const [
+    totalTour,
+    totalTourByTourTypes,
+    avgTourCost,
+    totalTourByDivision,
+    totalHighestBookedTour,
+  ] = await Promise.all([
     totalTourPromise,
     totalTourByTourTypesPromise,
+    avgTourCostPromise,
+    totalTourByDivisionPromise,
+    totalHighestBookedTourPromise,
   ]);
 
   return {
     totalTour,
     totalTourByTourTypes,
+    avgTourCost,
+    totalTourByDivision,
+    totalHighestBookedTour,
   };
 };
 
 const getBookingStats = async () => {};
 
 const getPaymentStats = async () => {};
+
 export const StatsService = {
   getBookingStats,
   getPaymentStats,
   getTourStats,
   getUserStats,
 };
+
+/**
+await Tour.updateMany(
+    {
+      $or: [
+        { tourType: { $type: "string" } },
+        { division: { $type: "string" } },
+      ],
+    },
+    [
+      {
+        $set: {
+          tourType: { $toObjectId: "$tourType" },
+          division: { $toObjectId: "$division" },
+        },
+      },
+    ]
+  ); 
+*/
