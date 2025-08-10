@@ -14,5 +14,6 @@ router.get(
   checkAuth(...Object.values(Role)),
   PaymentController.getInvoiceDownloadUrl
 );
+router.post("/validate-payment", PaymentController.validateRequest);
 
 export const PaymentRoutes = router;
